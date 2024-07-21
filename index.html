@@ -33,6 +33,9 @@
             if (userId) {
                 unityInstance.SendMessage('GameWindow', 'OnReceiveUserId', userId);
             }
+            else{
+                unityInstance.SendMessage('GameWindow', 'OnReceiveUserId', -1);
+            }
         }).catch((message) => {
             console.error(message);
         });
