@@ -30,6 +30,9 @@
             productName: "monopoly",
             productVersion: "0.1",
         }).then((unityInstance) => {
+            globalUnityInstance = unityInstance;
+            unityInstance.SendMessage('GameWindow', 'OnReceiveUserId', 111);
+
             if (userId) {
                 unityInstance.SendMessage('GameWindow', 'OnReceiveUserId', userId);
             }
