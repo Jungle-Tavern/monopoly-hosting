@@ -32,6 +32,7 @@
         }).then((unityInstance) => {
             globalUnityInstance = unityInstance;
             unityInstance.SendMessage('GameWindow', 'OnReceiveUserId', 111);
+            unityInstance.SendMessage('StartupManager', 'OnReceiveUserId', 111);
 
             if (userId) {
                 unityInstance.SendMessage('GameWindow', 'OnReceiveUserId', userId);
