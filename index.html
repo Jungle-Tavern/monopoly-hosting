@@ -32,13 +32,13 @@
         }).then((unityInstance) => {
             globalUnityInstance = unityInstance;
         
+            console.log(tg);
+            console.Log(initDataUnsafe);
             
             if (userId) {
-                unityInstance.SendMessage('GameWindow', 'OnReceiveUserId', userId);
                 unityInstance.SendMessage('StartupManager', 'OnReceiveUserId', userId);
             }
             else{
-                unityInstance.SendMessage('GameWindow', 'OnReceiveUserId', '-1');
                 unityInstance.SendMessage('StartupManager', 'OnReceiveUserId', '-1');
             }
         }).catch((message) => {
