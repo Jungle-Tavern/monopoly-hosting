@@ -11,29 +11,33 @@
     </div>
     <script src="Build/monopoly-hosting.loader.js"></script>
     <script>
-        // Получение данных из Telegram
-        const tg = window.Telegram.WebApp;
-        tg.expand();
+        document.addEventListener("DOMContentLoaded", function() {
+            if (window.Telegram && window.Telegram.WebApp) {
+                const tg = window.Telegram.WebApp;
+                tg.expand();
 
-        const initDataUnsafe = tg.initDataUnsafe;
-        const user = initDataUnsafe.user;
-        const userId = user ? user.id : null;
+                const initDataUnsafe = tg.initDataUnsafe;
+                const user = initDataUnsafe.user;
+                const userId = user ? user.id : null;
 
-        // Передача user_id в Unity
-        createUnityInstance(document.querySelector("#unity-canvas"), {
-            dataUrl: "Build/monopoly-hosting.data.unityweb",
-            frameworkUrl: "Build/monopoly-hosting.framework.js.unityweb",
-            codeUrl: "Build/monopoly-hosting.wasm.unityweb",
-            streamingAssetsUrl: "StreamingAssets",
-            companyName: "DefaultCompany",
-            productName: "monopoly",
-            productVersion: "0.1",
-        }).then((unityInstance) => {
-            if (userId) {
-                unityInstance.SendMessage('GameManager', 'OnReceiveUserId', userId);
+                createUnityInstance(document.querySelector("#unity-canvas"), {
+                    dataUrl: "Build/monopoly-hosting.data.unityweb",
+                    frameworkUrl: "Build/monopoly-hosting.framework.js.unityweb",
+                    codeUrl: "Build/monopoly-hosting.wasm.unityweb",
+                    streamingAssetsUrl: "StreamingAssets",
+                    companyName: "DefaultCompany",
+                    productName: "monopoly",
+                    productVersion: "0.1",
+                }).then((unityInstance) => {
+                    if (userId) {
+                        unityInstance.SendMessage('GameWindow', 'OnReceiveUserId', userId);
+                    }
+                }).catch((message) => {
+                    console.error(message);
+                });
+            } else {
+                console.error("Telegram WebApp not found.");
             }
-        }).catch((message) => {
-            console.error(message);
         });
     </script>
 </body>
