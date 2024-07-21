@@ -32,13 +32,14 @@
         }).then((unityInstance) => {
             globalUnityInstance = unityInstance;
         
-            unityInstance.SendMessage('StartupManager', 'OnReceiveUserId', '111');
-
+            
             if (userId) {
                 unityInstance.SendMessage('GameWindow', 'OnReceiveUserId', userId);
+                unityInstance.SendMessage('StartupManager', 'OnReceiveUserId', userId);
             }
             else{
                 unityInstance.SendMessage('GameWindow', 'OnReceiveUserId', '-1');
+                unityInstance.SendMessage('StartupManager', 'OnReceiveUserId', '-1');
             }
         }).catch((message) => {
             console.error(message);
