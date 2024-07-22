@@ -49,10 +49,12 @@
             globalUnityInstance = unityInstance;
         
             if (userId) {
-                unityInstance.SendMessage('StartupManager', 'OnReceiveUserId', userId);
+                console.log(userId)
+                //unityInstance.SendMessage('StartupManager', 'OnReceiveUserId', userId);
             }
             else{
-                unityInstance.SendMessage('StartupManager', 'OnReceiveUserId', '-1');
+                console.log(-1)
+                //unityInstance.SendMessage('StartupManager', 'OnReceiveUserId', '-1');
             }
         }).catch((message) => {
             console.error(message);
