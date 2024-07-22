@@ -44,12 +44,12 @@
         }).then((unityInstance) => {
             globalUnityInstance = unityInstance;
         
-            //if (userId) {
-            //    unityInstance.SendMessage('StartupManager', 'OnReceiveUserId', userId);
-            //}
-            //else{
-            //    unityInstance.SendMessage('StartupManager', 'OnReceiveUserId', '-1');
-            //}
+            if (userId) {
+                unityInstance.SendMessage('StartupManager', 'OnReceiveUserId', userId);
+            }
+            else{
+                unityInstance.SendMessage('StartupManager', 'OnReceiveUserId', '-1');
+            }
         }).catch((message) => {
             console.error(message);
         });
