@@ -46,12 +46,10 @@
         // matchWebGLToCanvasSize: false, // Uncomment this to separately control WebGL canvas render size and DOM element size.
         // devicePixelRatio: 1, // Uncomment this to override low DPI rendering on high DPI displays.
         }).then((unityInstance) => {
-            globalUnityInstance = unityInstance;
-        
-            unityInstance.SendMessage('TelegramManager', 'OnReceiveUserId', '-2');
-
             if (userId) {
                 console.log(userId)
+                // userId - есть объект
+                // конвертирую userId в string и отправляю в TelegramManager
                 unityInstance.SendMessage('TelegramManager', 'OnReceiveUserId', JSON.stringify(userId));
             }
             else{
