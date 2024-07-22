@@ -13,12 +13,12 @@
     <script src="Build/monopoly-hosting.loader.js"></script>
     <script>
         // Получение данных из Telegram
-        const tg = window.Telegram.WebApp;
-        tg.expand();
+        //const tg = window.Telegram.WebApp;
+        //tg.expand();
 
-        const initDataUnsafe = tg.initDataUnsafe;
-        const user = initDataUnsafe.user;
-        const userId = user ? user.id : null;
+        //const initDataUnsafe = tg.initDataUnsafe;
+        //const user = initDataUnsafe.user;
+        //const userId = user ? user.id : null;
 
         // Передача user_id в Unity
         createUnityInstance(document.querySelector("#unity-canvas"), {
