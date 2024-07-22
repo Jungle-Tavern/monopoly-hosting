@@ -41,6 +41,17 @@
         productVersion: "0.1",
         // matchWebGLToCanvasSize: false, // Uncomment this to separately control WebGL canvas render size and DOM element size.
         // devicePixelRatio: 1, // Uncomment this to override low DPI rendering on high DPI displays.
+        }).then((unityInstance) => {
+            globalUnityInstance = unityInstance;
+        
+            //if (userId) {
+            //    unityInstance.SendMessage('StartupManager', 'OnReceiveUserId', userId);
+            //}
+            //else{
+            //    unityInstance.SendMessage('StartupManager', 'OnReceiveUserId', '-1');
+            //}
+        }).catch((message) => {
+            console.error(message);
         });
     </script>
   </body>
