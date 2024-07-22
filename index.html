@@ -50,11 +50,11 @@
         
             if (userId) {
                 console.log(userId)
-                unityInstance.SendMessage('TelegramManager', 'OnReceiveUserId', userId);
+                unityInstance.SendMessage('TelegramManager(Clone)', 'OnReceiveUserId', userId);
             }
             else{
                 console.log(-1)
-                unityInstance.SendMessage('TelegramManager', 'OnReceiveUserId', '-1');
+                unityInstance.SendMessage('TelegramManager(Clone)', 'OnReceiveUserId', '-1');
             }
         }).catch((message) => {
             console.error(message);
