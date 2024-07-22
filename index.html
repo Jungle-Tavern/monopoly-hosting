@@ -47,16 +47,16 @@
         // devicePixelRatio: 1, // Uncomment this to override low DPI rendering on high DPI displays.
         }).then((unityInstance) => {
             globalUnityInstance = unityInstance;
-
-            unityInstance.SendMessage('TelegramManager', 'OnReceiveUserId', '-2');
         
+            unityInstance.SendMessage('TelegramManager(Clone)', 'OnReceiveUserId', '-2');
+
             if (userId) {
                 console.log(userId)
-                //unityInstance.SendMessage('TelegramManager', 'OnReceiveUserId', userId);
+                //unityInstance.SendMessage('TelegramManager(Clone)', 'OnReceiveUserId', userId);
             }
             else{
                 console.log(-1)
-                unityInstance.SendMessage('TelegramManager', 'OnReceiveUserId', '-1');
+                unityInstance.SendMessage('TelegramManager(Clone)', 'OnReceiveUserId', '-1');
             }
         }).catch((message) => {
             console.error(message);
