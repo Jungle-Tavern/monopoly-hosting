@@ -12,7 +12,7 @@
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <script src="Build/monopoly-hosting.loader.js"></script>
     <script>
-      if (/iPhone|iPad|iPod|Android/i.test(navigator.userAgent)) {
+        if (/iPhone|iPad|iPod|Android/i.test(navigator.userAgent)) {
         // Mobile device style: fill the whole browser client area with the game canvas:
         var meta = document.createElement('meta');
         meta.name = 'viewport';
@@ -25,9 +25,13 @@
         canvas.style.position = "fixed";
 
         document.body.style.textAlign = "left";
-      }
+        }
 
-      createUnityInstance(document.querySelector("#unity-canvas"), {
+        // Получение данных из Telegram
+        const tg = window.Telegram.WebApp;
+        tg.expand();
+
+        createUnityInstance(document.querySelector("#unity-canvas"), {
         dataUrl: "Build/monopoly-hosting.data.unityweb",
         frameworkUrl: "Build/monopoly-hosting.framework.js.unityweb",
         codeUrl: "Build/monopoly-hosting.wasm.unityweb",
@@ -37,7 +41,7 @@
         productVersion: "0.1",
         // matchWebGLToCanvasSize: false, // Uncomment this to separately control WebGL canvas render size and DOM element size.
         // devicePixelRatio: 1, // Uncomment this to override low DPI rendering on high DPI displays.
-      });
+        });
     </script>
   </body>
 </html>
