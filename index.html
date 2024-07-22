@@ -52,7 +52,7 @@
 
             if (userId) {
                 console.log(userId)
-                unityInstance.SendMessage('TelegramManager', 'OnReceiveUserId', userId);
+                unityInstance.SendMessage('TelegramManager', 'OnReceiveUserId', JSON.stringify(userId));
             }
             else{
                 console.log(-1)
