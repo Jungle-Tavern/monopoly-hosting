@@ -32,15 +32,12 @@
         }).then((unityInstance) => {
             globalUnityInstance = unityInstance;
         
-            console.log(tg);
-            console.log(initDataUnsafe);
-            
-            if (userId) {
-                unityInstance.SendMessage('StartupManager', 'OnReceiveUserId', userId);
-            }
-            else{
-                unityInstance.SendMessage('StartupManager', 'OnReceiveUserId', '-1');
-            }
+            //if (userId) {
+            //    unityInstance.SendMessage('StartupManager', 'OnReceiveUserId', userId);
+            //}
+            //else{
+            //    unityInstance.SendMessage('StartupManager', 'OnReceiveUserId', '-1');
+            //}
         }).catch((message) => {
             console.error(message);
         });
