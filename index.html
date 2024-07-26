@@ -9,8 +9,31 @@
     <div id="unity-container" style="position: absolute; width: 100%; height: 100%">
       <canvas id="unity-canvas" width={{{ WIDTH }}} height={{{ HEIGHT }}} style="width: 100%; height: 100%"></canvas>
     </div>
+    <script src="https://www.gstatic.com/firebasejs/7.19.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/7.19.1/firebase-database.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/7.19.1/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/7.19.1/firebase-functions.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/7.19.1/firebase-storage.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/7.19.1/firebase-firestore.js"></script>
+
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <script src="Build/monopoly-hosting.loader.js"></script>
+
+    <script>
+      // Your web app's Firebase configuration
+      const firebaseConfig = {
+        apiKey: "AIzaSyAa8B_Z0avWSifOBctcCZdrH9JmVHkwigE",
+        authDomain: "web-monopoly-f8bc3.firebaseapp.com",
+        databaseURL: "https://web-monopoly-f8bc3-default-rtdb.firebaseio.com",
+        projectId: "web-monopoly-f8bc3",
+        storageBucket: "web-monopoly-f8bc3.appspot.com",
+        messagingSenderId: "687910190417",
+        appId: "1:687910190417:web:e0754d127a6358d5586770",
+        measurementId: "G-NQYDT0E4DJ"
+      };
+      // Initialize Firebase
+      firebase.initializeApp(firebaseConfig);
+    </script>
     <script>
         if (/iPhone|iPad|iPod|Android/i.test(navigator.userAgent)) {
         // Mobile device style: fill the whole browser client area with the game canvas:
@@ -46,14 +69,13 @@
         // matchWebGLToCanvasSize: false, // Uncomment this to separately control WebGL canvas render size and DOM element size.
         // devicePixelRatio: 1, // Uncomment this to override low DPI rendering on high DPI displays.
         }).then((unityInstance) => {
+          window.unityInstance = unityInstance;
           if (userId) {
-            console.log(userId)
             // userId - есть объект
             // конвертирую userId в string и отправляю в TelegramManager
             unityInstance.SendMessage('TelegramManager', 'OnReceiveUserId', JSON.stringify(userId));
           }
           else{
-            console.log(-1)
             unityInstance.SendMessage('TelegramManager', 'OnReceiveUserId', '-1');
           }
         }).catch((message) => {
