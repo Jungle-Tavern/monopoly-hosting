@@ -57,6 +57,8 @@
         const initDataUnsafe = tg.initDataUnsafe;
         const user = initDataUnsafe.user;
         const userId = user ? user.id : null;
+        
+        console.log(user.name)
 
         createUnityInstance(document.querySelector("#unity-canvas"), {
         dataUrl: "Build/monopoly-hosting.data.unityweb",
