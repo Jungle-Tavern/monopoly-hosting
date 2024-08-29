@@ -61,7 +61,7 @@
         console.log("here")
         console.log(user.first_name)
         console.log(user.last_name)
-        console.log(user.first_name + " " + user.last_name)
+        console.log(JSON.stringify(user.first_name + " " + user.last_name))
         console.log(user)
         console.log(initDataUnsafe)
 
@@ -80,10 +80,10 @@
           if (userId) {
             // userId - есть объект
             // конвертирую userId в string и отправляю в TelegramManager
-            unityInstance.SendMessage('TelegramManager', 'OnReceiveUserId', JSON.stringify(userId));
+            unityInstance.SendMessage('TelegramManager', 'OnReceiveUserData', JSON.stringify(userId), JSON.stringify(user.first_name + " " + user.last_name));
           }
           else{
-            unityInstance.SendMessage('TelegramManager', 'OnReceiveUserId', '-1');
+            unityInstance.SendMessage('TelegramManager', 'OnReceiveUserData', '-1', "Fluffy Mayor");
           }
         }).catch((message) => {
             console.error(message);
