@@ -3,24 +3,150 @@
   <head>
     <meta charset="utf-8">
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-    <title>Unity WebGL Player | monopoly</title>
-  </head>
-  <body style="text-align: center; padding: 0; border: 0; margin: 0;">
-    <div id="unity-container" style="position: absolute; width: 100%; height: 100%">
-      <canvas id="unity-canvas" width={{{ WIDTH }}} height={{{ HEIGHT }}} style="width: 100%; height: 100%"></canvas>
-    </div>
+    <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1.0, user-scalable=no, shrink-to-fit=yes">
+    <title>Richie - My Fluffy Mayor</title>
+    <style>
+      body {
+        margin: 0;
+        padding: 0;
+        background-color: #000;
+        overflow: hidden;
+        font-family: Arial, sans-serif;
+      }
+
+      #unity-container {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        display: none;
+      }
+
+      #loading-screen {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: flex-end;
+        background: url('TemplateData/LoadingBackIcon.png') no-repeat center center;
+        background-size: cover;
+        z-index: 10;
+      }
+
+      .loading-group {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        margin-bottom: 20px;
+      }
+
+      .circular-container {
+        position: relative;
+        width: 65px;
+        height: 65px;
+        margin-bottom: 10px;
+      }
+
+      .circular {
+        width: 100%;
+        height: 100%;
+        transform: rotate(-90deg);
+      }
+
+      .circle {
+        fill: none;
+        stroke-width: 10;
+        transform-origin: center;
+        transition: stroke-dasharray 0.3s ease;
+      }
+
+      .circle-background {
+        stroke: rgba(255, 255, 255, 0.3);
+      }
+
+      .circle-progress {
+        stroke: #00B2FF; 
+        stroke-linecap: round;
+        stroke-dasharray: 0 283;
+      }
+
+      @keyframes spin {
+        0% {
+          transform: rotate(0deg);
+        }
+        100% {
+          transform: rotate(360deg);
+        }
+      }
+
+      .rotating {
+        animation: spin 1.5s linear infinite; 
+      }
+
+      #progress-percentage {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        color: white;
+        font-size: 16px;
+        font-family: Arial, sans-serif;
+      }
+
+      #hashtag {
+        margin-top: 10px;
+        font-size: 1.5em;
+        font-weight: bold;
+        color: white;
+        text-shadow: 0px 0px 5px black;
+      }
+    </style>
     <script src="https://www.gstatic.com/firebasejs/7.19.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/7.19.1/firebase-database.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/7.19.1/firebase-auth.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/7.19.1/firebase-functions.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/7.19.1/firebase-storage.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/7.19.1/firebase-firestore.js"></script>
-
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
-    <script src="Build/monopoly-hosting.loader.js"></script>
+  </head>
+  <body>
+    <div id="loading-screen">
+      <div class="loading-group">
+        <div class="circular-container rotating">
+          <svg class="circular" viewBox="0 0 100 100">
+            <circle class="circle circle-background" cx="50" cy="50" r="45"></circle>
+            <circle class="circle circle-progress" cx="50" cy="50" r="45" id="progress-circle"></circle>
+          </svg>
+        </div>
+        <div id="hashtag">#RICHIETHEMAYOR</div>
+      </div>
+    </div>
+
+    <div id="unity-container">
+      <canvas id="unity-canvas" style="width: 100%; height: 100%"></canvas>
+    </div>
 
     <script>
-      // Your web app's Firebase configuration
+      const progressCircle = document.getElementById("progress-circle");
+      const circumference = 2 * Math.PI * 45; // 2πr for the circle radius
+
+      let progress = 0;
+
+      function setProgress(value) {
+        progress = Math.min(Math.max(value, 0), 100); // Clamp progress between 0 and 100
+        const offset = circumference - (progress / 100) * circumference;
+        progressCircle.style.strokeDasharray = `${circumference - offset} ${circumference}`;
+      }
+
+      function ApplicationLaunched() {
+        setProgress(75);
+      }
+
+      function ApplicationLoaded() {
+        setProgress(100);
+        setTimeout(() => {
+          document.getElementById("loading-screen").style.display = "none";
+          document.getElementById("unity-container").style.display = "block";
+        }, 1000);
+      }
+
       const firebaseConfig = {
         apiKey: "AIzaSyAa8B_Z0avWSifOBctcCZdrH9JmVHkwigE",
         authDomain: "web-monopoly-f8bc3.firebaseapp.com",
@@ -29,60 +155,53 @@
         storageBucket: "web-monopoly-f8bc3.appspot.com",
         messagingSenderId: "687910190417",
         appId: "1:687910190417:web:e0754d127a6358d5586770",
-        measurementId: "G-NQYDT0E4DJ"
+        measurementId: "G-NQYDT0E4DJ",
       };
-      // Initialize Firebase
       firebase.initializeApp(firebaseConfig);
-    </script>
-    <script>
-        if (/iPhone|iPad|iPod|Android/i.test(navigator.userAgent)) {
-        // Mobile device style: fill the whole browser client area with the game canvas:
-        var meta = document.createElement('meta');
-        meta.name = 'viewport';
-        meta.content = 'width=device-width, height=device-height, initial-scale=1.0, user-scalable=no, shrink-to-fit=yes';
-        document.getElementsByTagName('head')[0].appendChild(meta);
 
-        var canvas = document.querySelector("#unity-canvas");
-        canvas.style.width = "100%";
-        canvas.style.height = "100%";
-        canvas.style.position = "fixed";
+      const tg = window.Telegram.WebApp;
+      tg.expand();
 
-        document.body.style.textAlign = "left";
-        }
+      const initDataUnsafe = tg.initDataUnsafe;
+      const user = initDataUnsafe.user;
+      const userId = user ? user.id : null;
 
-        // Получение данных из Telegram
-        const tg = window.Telegram.WebApp;
-        tg.expand();
-        
-        const initDataUnsafe = tg.initDataUnsafe;
-        const user = initDataUnsafe.user;
-        const userId = user ? user.id : null;
+      var buildUrl = "Build";
+      var loaderUrl = buildUrl + "/monopoly-hosting.loader.js";
 
-        createUnityInstance(document.querySelector("#unity-canvas"), {
-        dataUrl: "Build/monopoly-hosting.data.unityweb",
-        frameworkUrl: "Build/monopoly-hosting.framework.js.unityweb",
-        codeUrl: "Build/monopoly-hosting.wasm.unityweb",
+      var config = {
+        dataUrl: buildUrl + "/monopoly-hosting.data.unityweb",
+        frameworkUrl: buildUrl + "/monopoly-hosting.framework.js.unityweb",
+        codeUrl: buildUrl + "/monopoly-hosting.wasm.unityweb",
         streamingAssetsUrl: "StreamingAssets",
         companyName: "DefaultCompany",
-        productName: "monopoly",
+        productName: "Richie - My Fluffy Mayor",
         productVersion: "0.1",
-        // matchWebGLToCanvasSize: false, // Uncomment this to separately control WebGL canvas render size and DOM element size.
-        // devicePixelRatio: 1, // Uncomment this to override low DPI rendering on high DPI displays.
-        }).then((unityInstance) => {
-          window.unityInstance = unityInstance;
-          if (userId) {
-            // userId - есть объект
-            // конвертирую userId в string и отправляю в TelegramManager
-            unityInstance.SendMessage('TelegramManager', 'OnReceiveUserId', JSON.stringify(userId));
-            unityInstance.SendMessage('TelegramManager', 'OnReceiveUserName',  JSON.stringify(user.first_name + " " + user.last_name));
-          }
-          else{
-            unityInstance.SendMessage('TelegramManager', 'OnReceiveUserId', '-1');
-            unityInstance.SendMessage('TelegramManager', 'OnReceiveUserName', "Fluffy Mayor");
-          }
-        }).catch((message) => {
+      };
+
+      var script = document.createElement("script");
+      script.src = loaderUrl;
+      script.onload = () => {
+        createUnityInstance(document.querySelector("#unity-canvas"), config, (progress) => {
+          setProgress(progress * 50);
+        })
+          .then((unityInstance) => {
+            document.getElementById("unity-container").style.display = "block";
+            window.unityInstance = unityInstance;
+            if (userId) {
+              unityInstance.SendMessage("TelegramManager", "OnReceiveUserId", JSON.stringify(userId));
+              unityInstance.SendMessage("TelegramManager", "OnReceiveUserName", JSON.stringify(user.first_name + " " + user.last_name));
+            } else {
+              unityInstance.SendMessage("TelegramManager", "OnReceiveUserId", "-1");
+              unityInstance.SendMessage("TelegramManager", "OnReceiveUserName", "Fluffy Mayor");
+            }
+          })
+          .catch((message) => {
             console.error(message);
-        });
+          });
+      };
+
+      document.body.appendChild(script);
     </script>
   </body>
 </html>
