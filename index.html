@@ -44,14 +44,14 @@
       .logo {
         width: 250px;
         height: auto;
-        margin-bottom: 15px;
+        margin-top: 420px;
       }
 
       .circular-container {
-        position: relative;
-        width: 45px;
-        height: 45px;
-        margin-bottom: 23px;
+        position: absolute;
+        bottom: 320px;
+        width: 250px;
+        height: 250px;
       }
 
       .circular {
@@ -62,7 +62,7 @@
 
       .circle {
         fill: none;
-        stroke-width: 10;
+        stroke-width: 3;
         transform-origin: center;
         transition: stroke-dasharray 0.3s ease;
       }
@@ -86,26 +86,20 @@
         }
       }
 
+        .roadmap {
+            width: 250px;
+            height: auto;
+            position: absolute;
+            bottom: 510px;
+        }
+        #wrapper {
+            width: 1080px;
+            height: 1920px;
+            transform-origin: top left;
+            position: absolute;
+        }
       .rotating {
         animation: spin 1.5s linear infinite; 
-      }
-
-      #progress-percentage {
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        color: white;
-        font-size: 16px;
-        font-family: Arial, sans-serif;
-      }
-
-      #hashtag {
-        margin-top: 10px;
-        font-size: 1.5em;
-        font-weight: bold;
-        color: white;
-        text-shadow: 0px 0px 5px black;
       }
     </style>
     <script src="https://www.gstatic.com/firebasejs/7.19.1/firebase-app.js"></script>
@@ -114,13 +108,16 @@
   </head>
   <body>
     <div id="loading-screen">
-      <div class="loading-group">
-        <img src="TemplateData/Logo.png" class="logo" alt="Logo">
-        <div class="circular-container rotating">
-          <svg class="circular" viewBox="0 0 100 100">
-            <circle class="circle circle-background" cx="50" cy="50" r="45"></circle>
-            <circle class="circle circle-progress" cx="50" cy="50" r="45" id="progress-circle"></circle>
-          </svg>
+      <div id="wrapper">
+        <div class="loading-group">
+          <img src="TemplateData/Logo.png" class="logo" alt="Logo">
+          <img src="TemplateData/Roadmap.png" class="roadmap" alt="Roadmap">
+          <div class="circular-container rotating">
+              <svg class="circular" viewBox="0 0 100 100">
+                  <circle class="circle circle-background" cx="50" cy="50" r="15"></circle>
+                  <circle class="circle circle-progress" cx="50" cy="50" r="15" id="progress-circle"></circle>
+              </svg>
+          </div>
         </div>
       </div>
     </div>
@@ -130,13 +127,26 @@
     </div>
 
     <script>
+      function adjustScale() {
+        let scaleX = window.innerWidth / 600;
+        let scaleY = window.innerHeight / 1200;
+        let scale = Math.min(scaleX, scaleY);
+        document.getElementById("wrapper").style.transform = `scale(${scale})`;
+        document.getElementById("wrapper").style.left = `${(window.innerWidth - 1080 * scale) / 2}px`;
+        document.getElementById("wrapper").style.top = `${(window.innerHeight - 1920 * scale) / 2}px`;
+      }
+      window.addEventListener("resize", adjustScale);
+      window.addEventListener("load", adjustScale);
+      adjustScale();
+    
       const progressCircle = document.getElementById("progress-circle");
-      const circumference = 2 * Math.PI * 45; // 2πr for the circle radius
+      const radius = 15;
+      const circumference = 2 * Math.PI * radius;
 
       let progress = 0;
 
       function setProgress(value) {
-        progress = Math.min(Math.max(value, 0), 100); // Clamp progress between 0 and 100
+        progress = Math.min(Math.max(value, 0), 100);
         const offset = circumference - (progress / 100) * circumference;
         progressCircle.style.strokeDasharray = `${circumference - offset} ${circumference}`;
       }
