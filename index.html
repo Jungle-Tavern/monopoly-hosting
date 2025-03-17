@@ -1,223 +1,51 @@
 <!DOCTYPE html>
 <html lang="en-us">
-  <head>
-    <meta charset="utf-8">
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-    <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1.0, user-scalable=no, shrink-to-fit=yes">
-    <title>Richie - My Fluffy Mayor</title>
-    <style>
-      body {
-        margin: 0;
-        padding: 0;
-        background-color: #000;
-        overflow: hidden;
-        font-family: Arial, sans-serif;
-      }
-
-      #unity-container {
-        position: absolute;
-        width: 100%;
-        height: 100%;
-        display: none;
-      }
-
-      #loading-screen {
-        position: absolute;
-        width: 100%;
-        height: 100%;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: flex-end;
-        background: url('TemplateData/LoadingBackIcon.png') no-repeat center center;
-        background-size: cover;
-        z-index: 10;
-      }
-
-      .loading-group {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        margin-bottom: 20px;
-      }
-
-      .logo {
-        width: 250px;
-        height: auto;
-        margin-top: 420px;
-      }
-
-      .circular-container {
-        position: absolute;
-        bottom: 320px;
-        width: 250px;
-        height: 250px;
-      }
-
-      .circular {
-        width: 100%;
-        height: 100%;
-        transform: rotate(-90deg);
-      }
-
-      .circle {
-        fill: none;
-        stroke-width: 3;
-        transform-origin: center;
-        transition: stroke-dasharray 0.3s ease;
-      }
-
-      .circle-background {
-        stroke: rgba(255, 255, 255, 0.3);
-      }
-
-      .circle-progress {
-        stroke: #00B2FF; 
-        stroke-linecap: round;
-        stroke-dasharray: 0 283;
-      }
-
-      @keyframes spin {
-        0% {
-          transform: rotate(0deg);
-        }
-        100% {
-          transform: rotate(360deg);
-        }
-      }
-
-        .roadmap {
-            width: 250px;
-            height: auto;
-            position: absolute;
-            bottom: 510px;
-        }
-        #wrapper {
-            width: 1080px;
-            height: 1920px;
-            transform-origin: top left;
-            position: absolute;
-        }
-      .rotating {
-        animation: spin 1.5s linear infinite; 
-      }
-    </style>
-    <script src="https://www.gstatic.com/firebasejs/7.19.1/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/7.19.1/firebase-database.js"></script>
-    <script src="https://telegram.org/js/telegram-web-app.js"></script>
-  </head>
-  <body>
-    <div id="loading-screen">
-      <div id="wrapper">
-        <div class="loading-group">
-          <img src="TemplateData/Logo.png" class="logo" alt="Logo">
-          <img src="TemplateData/Roadmap.png" class="roadmap" alt="Roadmap">
-          <div class="circular-container rotating">
-              <svg class="circular" viewBox="0 0 100 100">
-                  <circle class="circle circle-background" cx="50" cy="50" r="15"></circle>
-                  <circle class="circle circle-progress" cx="50" cy="50" r="15" id="progress-circle"></circle>
-              </svg>
-          </div>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+        <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1.0, user-scalable=no, shrink-to-fit=yes">
+        <title>Richie - Metapolis Mayor</title>
+        <link rel="stylesheet" href="styles.css">
+        <script src="https://www.gstatic.com/firebasejs/7.19.1/firebase-app.js"></script>
+        <script src="https://www.gstatic.com/firebasejs/7.19.1/firebase-database.js"></script>
+        <script src="https://telegram.org/js/telegram-web-app.js"></script>
+        <script src="playDeckBridge.js"></script>
+        <script src='//whephiwums.com/sdk.js' data-zone='9040716' data-sdk='show_9040716'></script>
+        <script src="advertisingBridge.js"></script>
+        <script src="connectionStatus.js"></script>
+        <script src="firebase-init.js" defer></script>
+        <script src="telegram-init.js" defer></script>
+        <script src="progress-bar.js" defer></script>
+        <script src="scale-adjust.js" defer></script>
+        <script src="unity-loader.js" defer></script>
+        <script async src="https://tganalytics.xyz/index.js" onload="initAnalytics()" type="text/javascript"></script>
+    </head>
+    <body>
+        <div id="loading-screen">
+            <div id="wrapper">
+                <div class="loading-group">
+                    <img src="TemplateData/Logo.png" class="logo" alt="Logo">
+                    <img src="TemplateData/Roadmap.png" class="roadmap" alt="Roadmap">
+                    <div class="circular-container rotating">
+                        <svg class="circular" viewBox="0 0 100 100">
+                            <circle class="circle circle-background" cx="50" cy="50" r="15"></circle>
+                            <circle class="circle circle-progress" cx="50" cy="50" r="15" id="progress-circle"></circle>
+                        </svg>
+                    </div>
+                </div>
+            </div>
         </div>
-      </div>
-    </div>
+        <div id="unity-container">
+            <canvas id="unity-canvas" style="width: 100%; height: 100%"></canvas>
+        </div>
 
-    <div id="unity-container">
-      <canvas id="unity-canvas" style="width: 100%; height: 100%"></canvas>
-    </div>
-
-    <script>
-      function adjustScale() {
-        let scaleX = window.innerWidth / 600;
-        let scaleY = window.innerHeight / 1200;
-        let scale = Math.min(scaleX, scaleY);
-        document.getElementById("wrapper").style.transform = `scale(${scale})`;
-        document.getElementById("wrapper").style.left = `${(window.innerWidth - 1080 * scale) / 2}px`;
-        document.getElementById("wrapper").style.top = `${(window.innerHeight - 1920 * scale) / 2}px`;
-      }
-      window.addEventListener("resize", adjustScale);
-      window.addEventListener("load", adjustScale);
-      adjustScale();
-    
-      const progressCircle = document.getElementById("progress-circle");
-      const radius = 15;
-      const circumference = 2 * Math.PI * radius;
-
-      let progress = 0;
-
-      function setProgress(value) {
-        progress = Math.min(Math.max(value, 0), 100);
-        const offset = circumference - (progress / 100) * circumference;
-        progressCircle.style.strokeDasharray = `${circumference - offset} ${circumference}`;
-      }
-
-      function ApplicationLaunched() {
-        setProgress(75);
-      }
-
-      function ApplicationLoaded() {
-        setProgress(100);
-        setTimeout(() => {
-          document.getElementById("loading-screen").style.display = "none";
-          document.getElementById("unity-container").style.display = "block";
-        }, 1000);
-      }
-
-      const firebaseConfig = {
-        apiKey: "AIzaSyAa8B_Z0avWSifOBctcCZdrH9JmVHkwigE",
-        authDomain: "web-monopoly-f8bc3.firebaseapp.com",
-        databaseURL: "https://web-monopoly-f8bc3-default-rtdb.firebaseio.com",
-        projectId: "web-monopoly-f8bc3",
-        storageBucket: "web-monopoly-f8bc3.appspot.com",
-        messagingSenderId: "687910190417",
-        appId: "1:687910190417:web:e0754d127a6358d5586770",
-        measurementId: "G-NQYDT0E4DJ",
-      };
-      firebase.initializeApp(firebaseConfig);
-
-      const tg = window.Telegram.WebApp;
-      tg.expand();
-
-      const initDataUnsafe = tg.initDataUnsafe;
-      const user = initDataUnsafe.user;
-      const userId = user ? user.id : null;
-
-      var buildUrl = "Build";
-      var loaderUrl = buildUrl + "/monopoly-hosting.loader.js";
-
-      var config = {
-        dataUrl: buildUrl + "/monopoly-hosting.data.unityweb",
-        frameworkUrl: buildUrl + "/monopoly-hosting.framework.js.unityweb",
-        codeUrl: buildUrl + "/monopoly-hosting.wasm.unityweb",
-        streamingAssetsUrl: "StreamingAssets",
-        companyName: "DefaultCompany",
-        productName: "Richie - My Fluffy Mayor",
-        productVersion: "0.1",
-      };
-
-      var script = document.createElement("script");
-      script.src = loaderUrl;
-      script.onload = () => {
-        createUnityInstance(document.querySelector("#unity-canvas"), config, (progress) => {
-          setProgress(progress * 50);
-        })
-          .then((unityInstance) => {
-            document.getElementById("unity-container").style.display = "block";
-            window.unityInstance = unityInstance;
-            if (userId) {
-              unityInstance.SendMessage("TelegramManager", "OnReceiveUserId", JSON.stringify(userId));
-              unityInstance.SendMessage("TelegramManager", "OnReceiveUserName", JSON.stringify(user.first_name + " " + user.last_name));
-            } else {
-              unityInstance.SendMessage("TelegramManager", "OnReceiveUserId", "-1");
-              unityInstance.SendMessage("TelegramManager", "OnReceiveUserName", "Fluffy Mayor");
+        <script>
+            function initAnalytics() {
+              window.telegramAnalytics.init({
+                token: 'eyJhcHBfbmFtZSI6InJpY2hpZV9tZXRhcG9saXNfYm90IiwiYXBwX3VybCI6Imh0dHBzOi8vdC5tZS9yaWNoaWVfbWF5b3JfYm90L2dhbWVhcHAiLCJhcHBfZG9tYWluIjoiaHR0cHM6Ly9qdW5nbGUtdGF2ZXJuLmdpdGh1Yi5pby9tb25vcG9seS1ob3N0aW5nLyJ9!oPqEJNILcKO2awIj4fgrR7pR+rlJt9NG0qrEDYEPGI0=',
+                appName: 'richie_metapolis_bot',
+              });
             }
-          })
-          .catch((message) => {
-            console.error(message);
-          });
-      };
-
-      document.body.appendChild(script);
-    </script>
-  </body>
+        </script>
+    </body>
 </html>

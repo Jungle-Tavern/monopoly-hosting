@@ -1,0 +1,98 @@
+body {
+  margin: 0;
+  padding: 0;
+  background-color: #000;
+  overflow: hidden;
+  font-family: Arial, sans-serif;
+}
+
+#unity-container {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  display: none;
+}
+
+#loading-screen {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-end;
+  background: url('TemplateData/LoadingBackIcon.png') no-repeat center center;
+  background-size: cover;
+  z-index: 10;
+}
+
+.loading-group {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.logo {
+  width: 250px;
+  height: auto;
+  margin-top: 420px;
+}
+
+.roadmap {
+  width: 250px;
+  height: auto;
+  position: absolute;
+  bottom: 510px;
+}
+
+#wrapper {
+  width: 1080px;
+  height: 1920px;
+  transform-origin: top left;
+  position: absolute;
+  visibility: hidden;
+}
+
+.circular-container {
+  position: absolute;
+  bottom: 320px;
+  width: 250px;
+  height: 250px;
+}
+
+.circular {
+  width: 100%;
+  height: 100%;
+  transform: rotate(-90deg);
+}
+
+.circle {
+  fill: none;
+  stroke-width: 3;
+  transform-origin: center;
+  transition: stroke-dasharray 0.3s ease;
+}
+
+.circle-background {
+  stroke: rgba(255, 255, 255, 0.3);
+}
+
+.circle-progress {
+  stroke: #00B2FF;
+  stroke-linecap: round;
+  stroke-dasharray: 0 283;
+}
+
+@keyframes spin {
+  0% {
+      transform: rotate(0deg);
+  }
+  100% {
+      transform: rotate(360deg);
+  }
+}
+
+.rotating {
+  animation: spin 1.5s linear infinite;
+}
